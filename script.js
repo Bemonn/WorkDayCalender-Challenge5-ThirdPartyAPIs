@@ -1,6 +1,8 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
+const localSettings = {};
+dayjs.locale(localeSettings);
 $(function () {
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
@@ -16,8 +18,34 @@ $(function () {
   // current hour in 24-hour time?
   //
   // TODO: Add code to get any user input that was saved in localStorage and set
+  const currentHour = dayjs().format('HH');
+
+  function hourlyColor() {
+    const blocks = document.querySelectorAll('.time-block');
+    blocks.forEach((block) => {
+      const blockHour = parseInt(block.id);
+      block.classList.toggle('past', blockHour < currentHour);
+      block.classList.toggle('present', blockHour === currentHour);
+      block.classList.toggle('future', blockHour > currentHour);
+    });
+  }
+
+  function textEntry() {
+    const buttons = document.querySelectorAll('.saveBtn');
+    buttons.forEach((button) => {
+      button.addEventListener('click', function() {
+        const key = this.parentElement.getAttribute('id');
+        const value = this.previousElementSibling.value;
+        localStorage.setItem(key, value);
+      });
+    });
+  }
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
-  //
+  (function() {
+    hourlyColor();
+    textEntry();
+  })();
   // TODO: Add code to display the current date in the header of the page.
+
 });
