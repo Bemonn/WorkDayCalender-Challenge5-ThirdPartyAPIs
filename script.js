@@ -1,7 +1,7 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
-const localSettings = {};
+const localeSettings = {};
 dayjs.locale(localeSettings);
 $(function () {
   // TODO: Add a listener for click events on the save button. This code should
@@ -32,6 +32,7 @@ $(function () {
 
   function textEntry() {
     const buttons = document.querySelectorAll('.saveBtn');
+    
     buttons.forEach((button) => {
       button.addEventListener('click', function() {
         const key = this.parentElement.getAttribute('id');
@@ -40,12 +41,32 @@ $(function () {
       });
     });
   }
+
+  function refreshColor() {
+    $('.time-block').each(function() {
+      const blockHour = parseInt(this.id);
+      if (blockHour == currentHour) {
+        $(this).removeClass('past future').addClass('present');
+      } else if (blockHour < currentHour) {
+        $(this).removeClass('future present').addClass('past');
+      } else {
+        $(this).removeClass('past present').addClass('future');
+      }
+    });
+  }
+
+  $('.time-block').each(function() {
+    const key = $(this).attr('id');
+    const value = localStorage.getItem(key);
+    $(this).children('.description').val(value);
+  });
+
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   (function() {
     hourlyColor();
     textEntry();
+    refreshColor();
   })();
   // TODO: Add code to display the current date in the header of the page.
-
 });
