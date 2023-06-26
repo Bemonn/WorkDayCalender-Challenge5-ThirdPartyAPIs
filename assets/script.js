@@ -1,25 +1,11 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
+//code wrap and dayjs
 const localeSettings = {};
 dayjs.locale(localeSettings);
 $(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
+
   const currentHour = dayjs().format('HH');
 
+  //function to change colour of each time block dependent on whether its "past", "present" or "future" according to the current hour
   function hourlyColor() {
     const blocks = document.querySelectorAll('.time-block');
     blocks.forEach((block) => {
@@ -29,7 +15,9 @@ $(function () {
       block.classList.toggle('future', blockHour > currentHour);
     });
   }
+//end
 
+//function to save the user's input in a textarea when the corresponding save button is clicked to the localStorage
   function textEntry() {
     const buttons = document.querySelectorAll('.saveBtn');
     
@@ -41,7 +29,9 @@ $(function () {
       });
     });
   }
+//end
 
+//function to change colour of time blocks according to time of day
   function refreshColor() {
     $('.time-block').each(function() {
       const blockHour = parseInt(this.id);
@@ -54,13 +44,25 @@ $(function () {
       }
     });
   }
+//end
 
+//retrieves user input for the localStorage to keep textarea values
   $('.time-block').each(function() {
     const key = $(this).attr('id');
     const value = localStorage.getItem(key);
     $(this).children('.description').val(value);
   });
+//end
 
+ //Three main call functions to make the page function properly
+  (function() {
+    hourlyColor();
+    textEntry();
+    refreshColor();
+  })();
+  //end
+
+  //function to set the time every second at the top of the page
   function updateTime() {
     const dateElement = $('#date');
     const timeElement = $('#time');
@@ -69,13 +71,8 @@ $(function () {
     dateElement.text(currentDate);
     timeElement.text(currentTime);
   }
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  (function() {
-    hourlyColor();
-    textEntry();
-    refreshColor();
-  })();
-  // TODO: Add code to display the current date in the header of the page.
+   //end
+
+   //updates the time every second
   setInterval(updateTime, 1000);
 });
